@@ -1,0 +1,32 @@
+### Load dataset
+from sklearn.datasets import load_diabetes
+X, y = load_diabetes(as_frame=True, return_X_y=True)
+
+### Import mods ###
+
+import pandas as pd
+import matplotlib.pyplot as plt
+from sklearn.linear_model import LinearRegression
+from sklearn.model_selection import train_test_split
+
+### Split the data ###
+
+train_X, test_X, train_y, test_y = train_test_split(X, y, random_state=42)
+
+### Train the model ###
+variables = list(X.columns.values)
+
+for i in variables:
+    model = LinearRegression(fit_intercept=True)
+    model.fit(train_X[[i]], train_y)
+
+### Testing model fit ###
+    modscore = model.score(test_X[[i]], test_y)
+    print(f"{i} = {modscore}")
+
+
+    x_fit = pd.DataFrame({i: [X[i].min(), X[i].max()]})
+    y_pred = model.predict(x_fit)
+    fig, ax = plt.subplots()
+    ax.scatter(X[i], y)
+    ax.plot(x_fit[i], y_pred, linestyle=":", color="red")
