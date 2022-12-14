@@ -1,0 +1,143 @@
+from sklearn.datasets import load_diabetes
+
+fulldata = load_diabetes(as_frame=True, return_X_y=False)
+
+fulldata
+
+## Table 1. Diabetes study. 442 diabetes patients were measured on 10 baseline variables. A prediction model was desired for the response variable, a measure of disease progression one year after baseline. Then it was transformed 
+
+X, y = load_diabetes(as_frame=True, return_X_y=True)
+
+y
+
+## y = disease progression score after 12 months after 
+
+X
+
+All data has been rescaled (tranformed) to make all averages zero, we can show this with:
+
+X.mean()
+
+X.std()
+
+## Column Attributes
+
+### age age in years
+
+### sex
+
+### bmi body mass index
+
+### bp average blood pressure
+
+### s1 tc, total serum cholesterol
+
+### s2 ldl, low-density lipoproteins
+
+### s3 hdl, high-density lipoproteins
+
+### s4 tch, total cholesterol / HDL
+
+### s5 ltg, possibly log of serum triglycerides level
+
+### s6 glu, blood sugar level
+
+## import modules
+
+%matplotlib inline
+
+import seaborn as sns
+import pandas as pd
+
+##Correlation
+
+corr = X.corr()
+
+corr
+
+### Heat map
+
+sns.heatmap(corr, vmin=-1.0, vmax=1.0, square=True, cmap="RdBu")
+
+### Lowest correlation
+
+corr.min()
+
+corr.min().idxmin()
+
+corr[corr.min().idxmin()].idxmin()
+
+corr.min().idxmin(), corr[corr.min().idxmin()].idxmin()
+
+### Highest correltation
+
+import numpy as np
+
+np.fill_diagonal(corr.values, np.nan)
+
+corr
+
+corr.max().idxmax()
+
+corr.max().idxmax(), corr[corr.max().idxmax()].idxmax()
+
+from pandas.plotting import scatter_matrix
+
+a = scatter_matrix(X, figsize=(16, 16))
+
+## Regression model (example from scikit-learn)
+## If running in a notebook run everything below in a different console line
+
+import matplotlib.pyplot as plt
+import numpy as np
+from sklearn import datasets, linear_model
+from sklearn.metrics import mean_squared_error, r2_score
+
+# Load the diabetes dataset
+diabetes_X, diabetes_y = datasets.load_diabetes(return_X_y=True)
+
+# Use only one feature/ pick an X
+diabetes_X = diabetes_X[:, np.newaxis, 2]
+
+# Split the data into training/testing sets
+diabetes_X_train = diabetes_X[:-300]
+diabetes_X_test = diabetes_X[-121:]
+
+# Split the targets into training/testing sets
+diabetes_y_train = diabetes_y[:-300]
+diabetes_y_test = diabetes_y[-121:]
+
+# Create linear regression object
+regr = linear_model.LinearRegression()
+
+# Train the model using the training sets
+regr.fit(diabetes_X_train, diabetes_y_train)
+
+# Make predictions using the testing set
+diabetes_y_pred = regr.predict(diabetes_X_test)
+
+# The coefficients
+print("Coefficients: \n", regr.coef_)
+# The mean squared error
+print("Mean squared error: %.2f" % mean_squared_error(diabetes_y_test, diabetes_y_pred))
+# The coefficient of determination: 1 is perfect prediction
+print("Coefficient of determination: %.2f" % r2_score(diabetes_y_test, diabetes_y_pred))
+
+# Plot outputs
+plt.scatter(diabetes_X_test, diabetes_y_test, color="black")
+plt.plot(diabetes_X_test, diabetes_y_pred, color="blue", linewidth=3)
+
+plt.xticks(())
+plt.yticks(())
+
+plt.show()
+
+fig, ax = plt.subplots()
+
+ax.scatter(diabetes_X_train, diabetes_y_train, color="red", marker="o", label="train")
+ax.scatter(diabetes_X_test, diabetes_y_test, color="blue", marker="x", label="test")
+ax.legend()
+plt.plot(diabetes_X_test, diabetes_y_pred, color="blue", linewidth=1)
+
+regr.score(diabetes_X_test, diabetes_y_test)
+
